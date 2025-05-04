@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ezcash - Analizy na każdy dzień</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+    header {
+      background-color: #1e293b;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #38bdf8;
+    }
+    .analizy {
+      padding: 2rem;
+    }
+    .analiza {
+      background-color: #1e293b;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .analiza h3 {
+      margin-top: 0;
+      color: #38bdf8;
+    }
+    .analiza .data {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ezcash - Analizy na każdy dzień</h1>
+  </header>
+
+  <section class="analizy">
+    <div id="analizy-lista"></div>
+  </section>
+
+  <footer>
+    &copy; 2025 ezcash. Wszystkie prawa zastrzeżone.
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const dzisiaj = `${yyyy}-${mm}-${dd}`;
+
+      const analizy = [
+        { data: "2025-05-04", mecz: "Jagiellonia Białystok vs. Górnik Zabrze", typ: "Jagiellonia wygra", analiza: "Jagiellonia jest wysoko w tabeli i gra u siebie. Górnik ma słabszą formę na wyjazdach." },
+        { data: "2025-05-04", mecz: "Chelsea vs. Liverpool", typ: "Obie drużyny strzelą gola", analiza: "Obie drużyny są ofensywne i mają silne ataki. Duża szansa na gole z obu stron." },
+        { data: "2025-05-04", mecz: "Real Madryt vs. Celta Vigo", typ: "Real Madryt wygra i powyżej 2.5 gola", analiza: "Real gra o mistrzostwo, Celta ma słabą defensywę." },
+        { data: "2025-05-05", mecz: "Kotwica Kołobrzeg vs. Chrobry Głogów", typ: "Remis", analiza: "Obie drużyny są na zbliżonym poziomie. Możliwe wyrównane spotkanie." },
+        { data: "2025-05-05", mecz: "Girona FC vs. RCD Mallorca", typ: "Girona FC wygra", analiza: "Girona u siebie spisuje się dobrze, Mallorca słaba na wyjazdach." },
+        { data: "2025-05-06", mecz: "Manchester City vs. Tottenham", typ: "Manchester City wygra", analiza: "City walczy o mistrzostwo i gra u siebie. Tottenham ma problemy w defensywie." },
+        { data: "2025-05-06", mecz: "Lech Poznań vs. Raków Częstochowa", typ: "Powyżej 2.5 gola", analiza: "Oba zespoły ofensywnie nastawione. Wysoka szansa na kilka bramek." },
+        { data: "2025-05-07", mecz: "Juventus vs. AC Milan", typ: "Mniej niż 2.5 gola", analiza: "Spotkania tych drużyn są zwykle taktyczne i mało bramkowe." },
+        { data: "2025-05-07", mecz: "Legia Warszawa vs. Pogoń Szczecin", typ: "Legia wygra", analiza: "Legia w dobrej formie, gra u siebie. Pogoń ma problemy z wyjazdami." }
+      ];
+
+      const container = document.getElementById('analizy-lista');
+      const showAllBtn = document.createElement('button');
+      showAllBtn.textContent = "Pokaż wszystkie analizy";
+      showAllBtn.style.margin = "20px auto";
+      showAllBtn.style.display = "block";
+      showAllBtn.style.padding = "10px 20px";
+      showAllBtn.style.backgroundColor = "#38bdf8";
+      showAllBtn.style.color = "#0f172a";
+      showAllBtn.style.border = "none";
+      showAllBtn.style.borderRadius = "5px";
+      showAllBtn.style.cursor = "pointer";
+
+      const ukryteElementy = [];
+
+      const unikalneDaty = [...new Set(analizy.map(a => a.data))].sort();
+      unikalneDaty.forEach(date => {
+        const dzienne = analizy.filter(a => a.data === date);
+        if (dzienne.length > 0) {
+          const dateHeader = document.createElement('h2');
+          dateHeader.textContent = `Analizy na ${date}`;
+
+          const isToday = date === dzisiaj;
+          if (!isToday) dateHeader.style.display = "none";
+
+          container.appendChild(dateHeader);
+          if (!isToday) ukryteElementy.push(dateHeader);
+
+          dzienne.forEach(a => {
+            const div = document.createElement('div');
+            div.className = 'analiza';
+            div.innerHTML = `
+              <div class="data">Data: ${a.data}</div>
+              <h3>Mecz: ${a.mecz}</h3>
+              <p>Typ: ${a.typ}<br/>Analiza: ${a.analiza}</p>
+            `;
+            if (!isToday) {
+              div.style.display = "none";
+              ukryteElementy.push(div);
+            }
+            container.appendChild(div);
+          });
+        }
+      });
+
+      container.appendChild(showAllBtn);
+
+      showAllBtn.addEventListener('click', () => {
+        ukryteElementy.forEach(el => el.style.display = "");
+        showAllBtn.style.display = "none";
+      });
+    });
+  </script>
+</body>
+</html>
